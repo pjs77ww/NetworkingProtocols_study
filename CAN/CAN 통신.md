@@ -141,6 +141,16 @@ CAN은 **다중통신망(Multi Master Network)**이며 **CSMA/CD+AMP(Carrier Sen
 
 
 
+### 버스 형태에서 발생하는 문제
+
+버스형태: 신호가 네트워크 안에 머물러 있는 경우가 있다. => 종단 저항을 달아줘야 한다. 임피던스 매칭
+
+대역폭 문제 느린거
+
+끊기면 다 잘림
+
+
+
 ### 참고자료
 
 - CAN 통신의 이해 (https://www.fescaro.com/ko/archives/249)
