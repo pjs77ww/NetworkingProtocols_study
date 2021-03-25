@@ -2,7 +2,7 @@
 
 ### 개요
 
-차량 내에서 호스트 컴퓨터 없이 마이크로 컨트롤러나 장치들이 서로 통신하기 위해 설계된 **표준 통신 규격**이다. 차량 내 ECU(Electronic Control Unit)들은 CAN 프로토콜을 사용하여 통신한다.
+차량 내에서 호스트 컴퓨터 없이 마이크로 컨트롤러나 장치들이 서로 통신하기 위해 설계된 **표준 통신 규격**이다. 차량 내 ECU(Electronic Control Unit)들은 CAN 프로토콜을 사용하여 통신한다. 기본적으로 **CSMA/CA** + **AMP** 방식을 이용한다.
 
 ![](./CAN통신.jpg)
 
@@ -56,13 +56,67 @@ ISO 규격에 따라 통신 속도에서 차이가 있다.
 
 대부분의 CAN 2.0A 컨트롤러는 표준 CAN 포맷의 메시지만 전, 수신 가능하며, 확장 CAN(CAN 2.0B)는 양쪽 포맷을 전, 수신 가능하다.
 
-![](C:\Users\PNE\Desktop\신입교육\BLS1팀\프로토콜\CAN2.0A_CAN2.0B.jpg)
+![](./CAN2.0A_CAN2.0B.jpg)
 
 
 
 #### CAN 메시지 포멧(구조)
 
-CAN 통신은 OSI 7 Layer은 
+CAN 통신은 OSI 7 Layer은 Pysical Layer만 사용하기 때문에 데이터 전송 단위가 메시지(Message)이다. **CAN 통신에서 데이터 송수신은 메시지 프레임을 사용하여 이루어진다.** CAN에서는 데이터 프레임(Data Frame), 리모트 프레임(Remote Frame), 에러 프레임(Error Frame), 오버로드 프레임(Overload Frame)의 4가지 프레임 타입을 정의하고 있다.
+
+- **데이터 프레임(Data Frame)**
+
+  - 일반적으로 데이터 전송에 사용된다.
+
+- **리모트 프레임(Remote Frame)**
+
+  - 수신 노드에서 송신 노드에 전송을 요청할 때 사용된다.
+  - Arbitration field에는 transmitter의 ID가 포함되며 data field가 없는 것이 특징이다.
+
+- **에러 프레임(Error Frame)**
+
+  - 에러가 감지되었을 때, 시스템에 알릴 목적으로 사용된다.
+  - Error를 감지한 node가 6 dominant bit를 출력하면 다른 node는 이에 반응 (stuff error)하여 6 dominant bit를 출력
+  - 6~12 dominant bits (Error Flag) + 8 recessive bits (Error delimiter)로 구성
+
+- **오버로드 프레임(Overload Frame)**
+
+  - 메시지의 동기화를 목적으로 사용된다. 
+
+  - 6 dominant bits (Overload Flag) + 8 recessive bits (Overload delimiter)로 구성
+
+![](./message_structure.jpg)
+
+CAN 메시지 프레임의 각 필드
+
+- SOF(Start Of Frame)
+  - 한 개의 dominant 비트로 구성되어 있으며, 메시지의 처음을 지시하고 모든 노드의 동기화를 위해 사용된다.
+- Arbitration Field(중재 필드)
+  - 둘 이상의 놰드에서 메시지의 전송이 동시에 일어날 경우 발생하는 충돌을 조정하는데 사용된다.
+  - 11비트 혹은 29비트의 크기를 갖는 ID와 1비트의 RTR(Remote Transmission Request) 비트로 구성된다.
+  - RTR비트의 값은 데이터 프레임('d')인지 리모트 프레임('r')인지를 결정하는 데 사용된다.
+- Control Field(제어 필드)
+  - 2비트의 IDE(IDentifier Extension), 4비트의 데이터 길이 코드(DLC, Data Length Code)로 구성된다.
+  - IDE(IDentifier Extension): 표준 프레임과 확장 프레임을 구별한다.
+  - DLC(Data Length Code): 데이터 프레임의 데이터 바이트 수, 범위 0~8
+- Data Field(데이터 필드)
+  - 8bytes까지 사용 가능하며, 데이터를 저장하는 데 사용된다.
+- CRC(Cyclic Redundancy Check) Field
+  - 메시지 상의 에러 유무를 검사하는 데 사용된다.
+  - SOF에서부터 데이터 필드까지의 비트열을 이용해 생성한 15비트의 CRC 시퀀스와 하나의 'r'비트의 CRC 델리미터로 구성되어 있다.
+- ACK(ACKnowledge) Field
+  - 제대로 메시지를 수신 받았는지 확인하는 데 사용된다.
+  - 한 비트의 ACK 슬롯과 하나의 ACK 델리미터('d')로 구성되어 있다.
+  - 임의의 노드에서 올바른 메시지를 수신하게 되면 ACK 필드를 받는 순간 ACK 슬롯의 값을 'd'로 설정해 버스 상에서 계속 전송하게 된다.
+- EOF(End Of Frame) Field
+  - 메시지의 끝을 알리는 목적으로 사용된다.
+  - 7개의 'r' 비트로 구성되어 있다.
+
+
+
+*참고: 'd'비트: dominant bit(0), 'r'비트: recessive bit(1)*
+
+
 
 
 
