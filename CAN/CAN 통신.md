@@ -2,7 +2,7 @@
 
 ### 개요
 
-차량 내에서 호스트 컴퓨터 없이 마이크로 컨트롤러나 장치들이 서로 통신하기 위해 설계된 **표준 통신 규격**이다. 차량 내 ECU(Electronic Control Unit)들은 CAN 프로토콜을 사용하여 통신한다. 기본적으로 **CSMA/CA** + **AMP** 방식을 이용한다.
+차량 내에서 호스트 컴퓨터 없이 마이크로 컨트롤러나 장치들이 서로 통신하기 위해 설계된 **표준 통신 규격**이다. 차량 내 ECU(Electronic Control Unit)들은 CAN 프로토콜을 사용하여 통신한다. 기본적으로 **CSMA/CA** + **AMP(Carrier Sense Multiple Access/Collision Detection with Arbitration on Message Priority)** 방식을 이용한다.
 
 ![](./CAN통신.jpg)
 
@@ -117,6 +117,27 @@ CAN 메시지 프레임의 각 필드
 *참고: 'd'비트: dominant bit(0), 'r'비트: recessive bit(1)*
 
 
+
+#### CAN BUS 네트워크 동작원리
+
+CAN은 **다중통신망(Multi Master Network)**이며 **CSMA/CD+AMP(Carrier Sense Multiple Access/Collision Detection with Arbitration on Message Priority) 방식**을 이용한다. 이에 따라 아래와 같은 동작 순서를 따른다.
+
+1. CAN 노드에 메시지를 보내기 전에 CAN 버스라인이 사용 중인지 파악한다.
+
+2. 메시지 간 충돌 검출을 수행한다.(메시지의 수신 측 주소 혹은 송신 측 주소는 포함하지 않는다.)
+
+   - 만약 충돌이 발생하지 않으면 BUS가 *dominant* 상태가 되어 전송을 시작합니다.
+   - 만약 충돌이 발생하면 *ID*를 통해 우선순위를 결정합니다. *ID*가 낮을수록 우선순위가 높다.
+   - 낮은 우선순위의 메시지는 자동적으로 다음 버스 사이클에 재전송이 되도록 한다.
+
+   ![](./CAN_BUS_Arbit_SYS.jpg)
+
+3. 네트워크 상에 연결된 모든 노드는 BUS의 모든 메시지를 수신한 후 자신이 필요로 하는 *ID*의 메시지인 경우 수신한다.
+
+   - 여러 노드의 데이터가 동시에 자신의 노드로 유입되는 경우에, *ID*의 숫자를 비교하여 먼저 취할 메시지의 우선순위를 정한다. 이 경우 또한 낮은 *ID*가 우선순위가 높다.
+   - 제대로 수신한 경우 ACK 슬롯의 값을 'd'로 설정해 버스 상에서 계속 전송하게 된다.
+   - 에러가 발생한 경우 6 'd' 비트를 출력한다.
+   - Receiver의 내부 조건에 의해서 다음 data/remote frame 사이에 delay가 필요한 경우 Overload Frame을 전송한다.
 
 
 
