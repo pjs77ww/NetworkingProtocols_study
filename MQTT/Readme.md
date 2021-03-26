@@ -34,7 +34,7 @@
   - Multi Level Wildcard(#): 여러 토픽 레벨을 대체
     ![](./images/multiLvWild1.jpg)
 
-    ![](/images/multiLvWild2.jpg)
+    ![](./images/multiLvWild2.jpg)
 
 
 
