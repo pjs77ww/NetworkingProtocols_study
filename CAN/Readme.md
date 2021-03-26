@@ -4,7 +4,7 @@
 
 차량 내에서 호스트 컴퓨터 없이 마이크로 컨트롤러나 장치들이 서로 통신하기 위해 설계된 **표준 통신 규격**이다. 차량 내 ECU(Electronic Control Unit)들은 CAN 프로토콜을 사용하여 통신한다. 기본적으로 **CSMA/CA** + **AMP(Carrier Sense Multiple Access/Collision Detection with Arbitration on Message Priority)** 방식을 이용한다.
 
-![](./CAN통신.jpg)
+![](./images/CAN통신.jpg)
 
 
 
@@ -12,7 +12,7 @@
 
 초기 자동차 안에는 모듈이 많지 않아 UART(Point-To-Point) 방식으로 ECU를 연결했다. 하지만 현대 자동차 안에는 모듈이 많아져 UART 방식으로 하게 되면 많은 선이 필요하게 된다. 이에 따라 유지 보수 문제, 배선 증가로 인한 무게 증가, 연비 하락의 문제가 발생한다. 이러한 문제를 해결하기 위해 CAN 통신을 사용하기 시작했다.
 
-![](./CAN_UART.jpg)
+![](./images/CAN_UART.jpg)
 
 CAN은 여러 개의 CAN 디바이스가 서로 통신할 수 있는 안정적인 네트워크(다중 통신 방식, Multi Master 방식)를 제공한다. 이와 같은 네트워크는 ECU가 시스템 내 각 디바이스마다 아날로그 및 디지털 입력을 갖는 것이 아닌 단일의 CAN 인터페이스만 보유한다.
 
@@ -56,7 +56,7 @@ ISO 규격에 따라 통신 속도에서 차이가 있다.
 
 대부분의 CAN 2.0A 컨트롤러는 표준 CAN 포맷의 메시지만 전, 수신 가능하며, 확장 CAN(CAN 2.0B)는 양쪽 포맷을 전, 수신 가능하다.
 
-![](./CAN2.0A_CAN2.0B.jpg)
+![](./images/CAN2.0A_CAN2.0B.jpg)
 
 
 
@@ -85,7 +85,7 @@ CAN 통신은 OSI 7 Layer은 Pysical Layer만 사용하기 때문에 데이터 �
 
   - 6 dominant bits (Overload Flag) + 8 recessive bits (Overload delimiter)로 구성
 
-![](./message_structure.jpg)
+![](./images/message_structure.jpg)
 
 CAN 메시지 프레임의 각 필드
 
@@ -130,7 +130,7 @@ CAN은 **다중통신망(Multi Master Network)**이며 **CSMA/CD+AMP(Carrier Sen
    - 만약 충돌이 발생하면 *ID*를 통해 우선순위를 결정합니다. *ID*가 낮을수록 우선순위가 높다.
    - 낮은 우선순위의 메시지는 자동적으로 다음 버스 사이클에 재전송이 되도록 한다.
 
-   ![](./CAN_BUS_Arbit_SYS.jpg)
+   ![](./images/CAN_BUS_Arbit_SYS.jpg)
 
 3. 네트워크 상에 연결된 모든 노드는 BUS의 모든 메시지를 수신한 후 자신이 필요로 하는 *ID*의 메시지인 경우 수신한다.
 
