@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 
+f = open("log.txt", 'w')
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -7,10 +8,9 @@ def on_connect(client, userdata, flags, rc):
     else:
         print("Bad connection Returned code=", rc)
 
-
 def on_disconnect(client, userdata, flags, rc=0):
     print(str(rc))
-
+    f.close()
 
 def on_subscribe(client, userdata, mid, granted_qos):
     print("subscribed: " + str(mid) + " " + str(granted_qos))
@@ -18,10 +18,13 @@ def on_subscribe(client, userdata, mid, granted_qos):
 
 def on_message(client, userdata, msg):
     print(str(msg.payload.decode("utf-8")))
+    f.write(str(msg.payload.decode("utf-8")))
+    f.write("\n")
 
 def on_log(client, userdata, level, buf):
     print("log : ", buf)
-
+    f.write(buf)
+    f.write("\n")
 
 # 새로운 클라이언트 생성
 client = mqtt.Client("SHJeon")
@@ -44,14 +47,12 @@ client.username_pw_set("JSPark", "Qlwutdma56")
 # connect to HiveMQ Cloud on port 8883
 client.connect("38eb288b38d446669aae84b29d57b8c6.s1.eu.hivemq.cloud", 8883)
 
-
-
 # common topic 으로 메세지 발행
 client.subscribe('my/test/topic', 1)
 
-# # 공용 broker
+# # 발표용 broker
 # client.connect("broker.mqttdashboard.com", 1883)
 
-# # 공용 topic
+# # 발표용 topic
 # client.subscribe('hello', 1)
 client.loop_forever()
