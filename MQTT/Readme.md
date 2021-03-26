@@ -64,7 +64,9 @@
 - Python 설치(Python 3.7.9 사용)
 
 - paho-mqtt 라이브러리 설치
-  ![](./images/paho-mqtt설치.PNG)
+  
+
+![](./images/paho-mqtt설치.PNG)
 
 - **publish.py**
 
@@ -160,6 +162,130 @@
   ![](./images/result.png)
 
 
+
+### 응용
+
+#### 단방향 메신저
+
+- subscribe.py
+
+  ```python
+  import paho.mqtt.client as mqtt
+  
+  
+  def on_connect(client, userdata, flags, rc):
+      if rc == 0:
+          print("connected OK")
+      else:
+          print("Bad connection Returned code=", rc)
+  
+  
+  def on_disconnect(client, userdata, flags, rc=0):
+      print(str(rc))
+  
+  
+  def on_subscribe(client, userdata, mid, granted_qos):
+      print("subscribed: " + str(mid) + " " + str(granted_qos))
+  
+  
+  def on_message(client, userdata, msg):
+      print(str(msg.payload.decode("utf-8")))
+  
+  
+  # 새로운 클라이언트 생성
+  client = mqtt.Client("SHJeon")
+  # 콜백 함수 설정 on_connect(브로커에 접속)
+  # on_disconnect(브로커에 접속중료)
+  # on_subscribe(topic 구독),
+  # on_message(발행된 메세지가 들어왔을 때)
+  client.on_connect = on_connect
+  client.on_disconnect = on_disconnect
+  client.on_subscribe = on_subscribe
+  client.on_message = on_message
+  # address : localhost, port: 1883 에 연결
+  # client.connect("38eb288b38d446669aae84b29d57b8c6.s1.eu.hivemq.cloud", 8883)
+  
+  
+  # enable TLS
+  client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
+  
+  # set username and password
+  client.username_pw_set("JSPark", "Qlwutdma56")
+  
+  # connect to HiveMQ Cloud on port 8883
+  client.connect("38eb288b38d446669aae84b29d57b8c6.s1.eu.hivemq.cloud", 8883)
+  
+  # common topic 으로 메세지 발행
+  client.subscribe('my/test/topic', 1)
+  client.loop_forever()
+  ```
+
+- messanger.py
+
+  ```python
+  import time
+  
+  # 단방향 메신저
+  import paho.mqtt.client as mqtt
+  
+  # The callback for when the client receives a CONNACK response from the server.
+  def on_connect(client, userdata, flags, rc):
+      if rc == 0:
+          print("Connected successfully")
+      else:
+          print("Connect returned result code: " + str(rc))
+  
+  # The callback for when a PUBLISH message is received from the server.
+  def on_message(client, userdata, msg):
+      print("Received message: " + msg.topic + " -> " + msg.payload.decode("utf-8"))
+  
+  def on_disconnect(client, userdata, mid):
+      print("In on_pub callback mid= ", mid)
+  
+  
+  # create the client
+  client = mqtt.Client()
+  client.on_connect = on_connect
+  client.on_disconnect = on_disconnect
+  client.on_message = on_message
+  
+  # enable TLS
+  client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
+  
+  # set username and password
+  client.username_pw_set("JSPark", "Qlwutdma56")
+  
+  # connect to HiveMQ Cloud on port 8883
+  client.connect("38eb288b38d446669aae84b29d57b8c6.s1.eu.hivemq.cloud", 8883)
+  
+  contents = ''
+  
+  time.sleep(5)
+  
+  while contents != "exit":
+      client.loop_start()
+  
+      # Message contents
+      contents = input("메시지를 입력하세요: ")
+  
+      # publish "Hello" to the topic "my/test/topic"
+      client.publish("my/test/topic", contents)
+  
+  
+  client.loop_stop()
+  client.disconnect()
+  ```
+
+- ```bash
+  python subscribe.py
+  ```
+
+- ```bash
+  python messanger.py
+  ```
+
+- **result**
+  ![](./images/messanger_result.PNG)
 
 
 
