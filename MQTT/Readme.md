@@ -10,7 +10,7 @@
 ## 특징
 
 - IoT를 위해서 낮은 전력, 낮은 대역폭 환경에서도 사용할 수 있도록 설계
-  ![](./images/MQTT 특징.jpg)
+  ![](./images/MQTT_features.jpg)
 
 
 
@@ -20,7 +20,7 @@
 - 구독자(Subscriber): 특정 Topic에 들어오는 메시지를 감시하는 클라이언트
 - 중개자(Broker): 클라이언트를 연결시켜주는 서버
 
-![](./images/MQTT 구조.png)
+![](./images/MQTT_Structure.png)
 
 - 토픽(Topic): 계층적 구조를 갖는 정보의 위치
 
