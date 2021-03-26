@@ -157,7 +157,7 @@
   
   **result**
   
-  ![](./images\result.png)
+  ![](./images/result.png)
 
 
 
